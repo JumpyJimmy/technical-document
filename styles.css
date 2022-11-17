@@ -184,6 +184,10 @@
     margin-top: 2em;
   }
   
+#references{
+  margin-bottom: 2em;
+}
+
   @media (max-width: 600px){
     #navbar{
       display: none;
