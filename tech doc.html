@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin White paper</title>
+  </head>
+  <body>
+    <div class="nav">
+    <nav id="navbar">
+      <header>Bitcoin white paper</header>
+      <ul>
+        <li>
+          <a class="nav-link" href="#introduction">Introduction</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#transactions">Transactions</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#timestamp_server">Timestamp Server</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#proof-of-work">Proof-of-Work</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#network">Network</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#incentive">Incentive</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#reclaiming_disk_space">Reclaiming Disk Space</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#simplified_payment_verification">Simplified Payment Verification</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#combining_and_splitting_value">Combining and Splitting Value</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#privacy">Privacy</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#calculations">Calculations</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#conclusion">Conclusion</a>
+        </li>
+        <li>
+          <a class="nav-link" href="#references">References</a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+    <main id="main-doc">
+      <div class="title">
+        <h1>Bitcoin: A Peer-to-Peer Electronic Cash System</h1>
+        <p>Satoshi Nakamoto</p>
+        <p>satoshin@gmx.com</p>
+        <p>www.bitcoin.org</p>
+        <span class="abstract"><strong>Abstract.</strong> A purely peer-to-peer version of electronic cash would allow online
+payments to be sent directly from one party to another without going through a
+financial institution. Digital signatures provide part of the solution, but the main
+benefits are lost if a trusted third party is still required to prevent double-spending.
+We propose a solution to the double-spending problem using a peer-to-peer network.
+The network timestamps transactions by hashing them into an ongoing chain of
+hash-based proof-of-work, forming a record that cannot be changed without redoing
+the proof-of-work. The longest chain not only serves as proof of the sequence of
+events witnessed, but proof that it came from the largest pool of CPU power. As
+long as a majority of CPU power is controlled by nodes that are not cooperating to
+attack the network, they'll generate the longest chain and outpace attackers. The
+network itself requires minimal structure. Messages are broadcast on a best effort
+basis, and nodes can leave and rejoin the network at will, accepting the longest
+proof-of-work chain as proof of what happened while they were gone.</span>
+      </div>
+      <section class="main-section" id="introduction">
+        <header>Introduction</header>
+        <p>Commerce on the Internet has come to rely almost exclusively on financial institutions serving as
+trusted third parties to process electronic payments. While the system works well enough for
+most transactions, it still suffers from the inherent weaknesses of the trust based model.
+Completely non-reversible transactions are not really possible, since financial institutions cannot
+avoid mediating disputes. The cost of mediation increases transaction costs, limiting the
+minimum practical transaction size and cutting off the possibility for small casual transactions,
+and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible services. With the possibility of reversal, the need for trust spreads. Merchants must
+be wary of their customers, hassling them for more information than they would otherwise need.
+A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties
+can be avoided in person by using physical currency, but no mechanism exists to make payments
+over a communications channel without a trusted party.</p>
+<p>What is needed is an electronic payment system based on cryptographic proof instead of trust,
+allowing any two willing parties to transact directly with each other without the need for a trusted
+third party. Transactions that are computationally impractical to reverse would protect sellers
+from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In
+this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed
+timestamp server to generate computational proof of the chronological order of transactions. The
+system is secure as long as honest nodes collectively control more CPU power than any
+cooperating group of attacker nodes.</p>
+      </section>
+      <section class="main-section" id="transactions">
+        <header>Transactions</header>
+        <p>We define an electronic coin as a chain of digital signatures. Each owner transfers the coin to the
+next by digitally signing a hash of the previous transaction and the public key of the next owner
+and adding these to the end of the coin. A payee can verify the signatures to verify the chain of
+ownership.</p>
+      <img src="data:image/png;base64,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" id="transactions-img">
+      <p>The problem of course is the payee can't verify that one of the owners did not double-spend
+the coin. A common solution is to introduce a trusted central authority, or mint, that checks every
+transaction for double spending. After each transaction, the coin must be returned to the mint to
+issue a new coin, and only coins issued directly from the mint are trusted not to be double-spent.
+The problem with this solution is that the fate of the entire money system depends on the
+company running the mint, with every transaction having to go through them, just like a bank.</p>
+      <p>We need a way for the payee to know that the previous owners did not sign any earlier
+transactions. For our purposes, the earliest transaction is the one that counts, so we don't care
+about later attempts to double-spend. The only way to confirm the absence of a transaction is to
+be aware of all transactions. In the mint based model, the mint was aware of all transactions and
+decided which arrived first. To accomplish this without a trusted party, transactions must be
+publicly announced [1], and we need a system for participants to agree on a single history of the
+order in which they were received. The payee needs proof that at the time of each transaction, the
+majority of nodes agreed it was the first received.</p>
+      </section>
+      <section class="main-section" id="timestamp_server">
+        <header>Timestamp Server</header>
+        <p>The solution we propose begins with a timestamp server. A timestamp server works by taking a
+hash of a block of items to be timestamped and widely publishing the hash, such as in a
+newspaper or Usenet post [2-5]. The timestamp proves that the data must have existed at the
+time, obviously, in order to get into the hash. Each timestamp includes the previous timestamp in
+its hash, forming a chain, with each additional timestamp reinforcing the ones before it.</p>
+      <img id="timestamp-server-img" src="https://i.stack.imgur.com/Kjh2Z.png">
+      </section>
+      <section class="main-section" id="proof-of-work">
+        <header>Proof-of-Work</header>
+        <p>To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proofof-work system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts.
+The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the
+hash begins with a number of zero bits. The average work required is exponential in the number
+of zero bits required and can be verified by executing a single hash.</p>
+      <p class="indent">For our timestamp network, we implement the proof-of-work by incrementing a nonce in the
+block until a value is found that gives the block's hash the required zero bits. Once the CPU
+effort has been expended to make it satisfy the proof-of-work, the block cannot be changed
+without redoing the work. As later blocks are chained after it, the work to change the block
+would include redoing all the blocks after it</p>
+      <img id="proof-of-work-img" src="data:image/png;base64,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">
+      <p class="indent">The proof-of-work also solves the problem of determining representation in majority decision
+making. If the majority were based on one-IP-address-one-vote, it could be subverted by anyone
+able to allocate many IPs. Proof-of-work is essentially one-CPU-one-vote. The majority
+decision is represented by the longest chain, which has the greatest proof-of-work effort invested
+in it. If a majority of CPU power is controlled by honest nodes, the honest chain will grow the
+fastest and outpace any competing chains. To modify a past block, an attacker would have to
+redo the proof-of-work of the block and all blocks after it and then catch up with and surpass the
+work of the honest nodes. We will show later that the probability of a slower attacker catching up
+diminishes exponentially as subsequent blocks are added.</p>
+      <p class="indent">To compensate for increasing hardware speed and varying interest in running nodes over time,
+the proof-of-work difficulty is determined by a moving average targeting an average number of
+blocks per hour. If they're generated too fast, the difficulty increases.</p>
+      </section>
+      <section class="main-section" id="network">
+        <header>Network</header>
+        <p>The steps to run the network are as follows:</p>
+        <ol>
+          <li>New transactions are broadcast to all nodes.</li>
+          <li>Each node collects new transactions into a block</li>
+          <li> Each node works on finding a difficult proof-of-work for its block</li>
+          <li>When a node finds a proof-of-work, it broadcasts the block to all nodes</li>
+          <li> Nodes accept the block only if all transactions in it are valid and not already spent</li>
+          <li>Nodes express their acceptance of the block by working on creating the next block in the
+chain, using the hash of the accepted block as the previous hash.</li>
+        </ol>
+        <p class="indent">Nodes always consider the longest chain to be the correct one and will keep working on
+extending it. If two nodes broadcast different versions of the next block simultaneously, some
+nodes may receive one or the other first. In that case, they work on the first one they received,
+but save the other branch in case it becomes longer. The tie will be broken when the next proofof-work is found and one branch becomes longer; the nodes that were working on the other
+branch will then switch to the longer one.</p>
+      <p class="indent">New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach
+many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped
+messages. If a node does not receive a block, it will request it when it receives the next block and
+realizes it missed one.</p>
+      </section>
+      <section class="main-section" id="incentive">
+        <header>Incentive</header>
+        <p>By convention, the first transaction in a block is a special transaction that starts a new coin owned
+by the creator of the block. This adds an incentive for nodes to support the network, and provides
+a way to initially distribute coins into circulation, since there is no central authority to issue them.
+The steady addition of a constant of amount of new coins is analogous to gold miners expending
+resources to add gold to circulation. In our case, it is CPU time and electricity that is expended.</p>
+      <p class="indent">The incentive can also be funded with transaction fees. If the output value of a transaction is
+less than its input value, the difference is a transaction fee that is added to the incentive value of
+the block containing the transaction. Once a predetermined number of coins have entered
+circulation, the incentive can transition entirely to transaction fees and be completely inflation
+free.</p>
+      <p class="indent">The incentive may help encourage nodes to stay honest. If a greedy attacker is able to
+assemble more CPU power than all the honest nodes, he would have to choose between using it
+to defraud people by stealing back his payments, or using it to generate new coins. He ought to
+find it more profitable to play by the rules, such rules that favour him with more new coins than
+everyone else combined, than to undermine the system and the validity of his own wealth.</p>
+      </section>
+      <section class="main-section" id="reclaiming_disk_space">
+        <header>Reclaiming Disk Space</header>
+        <p>Once the latest transaction in a coin is buried under enough blocks, the spent transactions before
+it can be discarded to save disk space. To facilitate this without breaking the block's hash,
+transactions are hashed in a Merkle Tree [7][2][5], with only the root included in the block's hash.
+Old blocks can then be compacted by stubbing off branches of the tree. The interior hashes do
+not need to be stored.</p>
+      <img id="reclaiming-disk-space-img" src="data:image/png;base64,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">
+      <p class="indent">A block header with no transactions would be about 80 bytes. If we suppose blocks are
+generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems
+typically selling with 2GB of RAM as of 2008, and Moore's Law predicting current growth of
+1.2GB per year, storage should not be a problem even if the block headers must be kept in
+memory.</p>
+      </section>
+      <section class="main-section" id="simplified_payment_verification">
+        <header>Simplified Payment Verification</header>
+        <p>It is possible to verify payments without running a full network node. A user only needs to keep
+a copy of the block headers of the longest proof-of-work chain, which he can get by querying
+network nodes until he's convinced he has the longest chain, and obtain the Merkle branch
+linking the transaction to the block it's timestamped in. He can't check the transaction for
+himself, but by linking it to a place in the chain, he can see that a network node has accepted it,
+and blocks added after it further confirm the network has accepted it.</p>
+      <img id="simplified-payment-verification-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVgAAACTCAMAAAD86vGxAAABhlBMVEX////MzMz6+vrV1dX29vba2toAAADw8PDQ0NDg4ODl5eXx8fHLy8vp6eno6Oj///u3t7f///mkpKT5///0//////WWlpazs7P/+eu8vLyFhYaqqqr78uKXlJHy+f8/Pz/f7vqOjpCblpOwusXf8v+Ij5qomYzFuKqPn6yvo5rr9PuPjIqCfn2ek4bh6vL/9OOYiYWQmrEdHR3UxbnR197g1Mlvb29UVFT35cnk2cTWybSbrLmqmICMmJ90fHn///C8sJ+UelSCord+i4//9de2yNQ/OCh2VDiHprmFf2S20eTFx710i53x5NGGgG/Ot5pgfZqumHuyuqxqX0+npJLAqpHW1sLhzK2tzOJ5cGJ7lrCssqRbaHJHWWKJoKCdutB5a2y8p5plVkhwgJCwmYuOeXBbTUeFbl9/fYSipa59d3xmZmbXwa0xJi6QgYBYWGFaSTxmbX41UGaChZo1TGhXSVEvLy+8pIMyZ4IAKk05RlBdc4R+l6Ouv8FTUDlThKFuUy0FABvyXkzkAAAPYklEQVR4nO2di1/aStrHH7lfRe4QLiVGCCSAWBJbTVVeOXnXo2D37NGztZeDLrUHu25d2z2nu9vTfd/3P39ngsrFEEIBe2G+fj5ALuSX+fkwmZnMTAAIBAKBQCAQCAQCQZ2Yyrq1FECBprmbFeuS8lZPQ4SBR6kgoyxuKW9r/Ib/6iDRqZ7pV8YmQJyXtnx8Ks4nuAqdXOOF/9oGqMJ3Tw+kOiV7ChvB/5YBKhT3hx28//c7D3fRV+KhveyaAMs1qMv7B5K3QCcX1mLpwOdO0JcCMnY/8Hjvj1u1R4Ef/tRkn37/UXicAvgxtFlchVUoHOw+3C74nWvbsHm4ZDJkfnqSqPj3/YfPdrZ+RIH85yfoIEf+o6DwvsE/fqIsEuDa2D893art+98/23ELdvE5NrYK4NlEWx8dpL7bLlh9lR1kbConP3wROPgZ9uHxs8ZWlfLjiI1LecivZw+RsbvE2Gv26Wycym5JW+i3fZQ6oFLrtFzPKnmvxwfrFOMtVAPP/ABo0/kSQLAJazLUqWxd3mLqKItY56t+H8Ti1DM5tpZa2/3cCfryOKxW/Z/7HAgEAoFAIHwB2F1z08Fl7RWKTklnznhHOiPW3F3j/V8GYzD3LhoH7Dc2c5qLU9OZ8O76MRFjpwMxdkoQYzEF+gzCV2sW8EsYPOGbfcrcra8NR9VYkaKLYqq9Riy2XzpH9zCfoKNqrEjTxevjKno9OsFJ6OjbvQXnQtqbYNAZWdMRGa+AqneRgTJdjISOuTKd3KNHa1JQNfYkBVQlVaY5pHWeWkjC+S5aJyKRxBmwvnfBhBzxyZ+Sgt7FkyVIV1KsosOmwn5gU/ByCenGExKwi9lIQo77hLF09O3+l9BfDelSoCI0PeY3acDtsolagTktGuvNRSgZL/dqpyO2ZasayzZLEutagfTLJWN5FYXs+WXogeO57dLuPDVKkfSp69i4MpqOqrGHzf1GZW7Hk85wRvYS6zRDr9zP95p25y/GRjyLdXbG09G3ewvqUroE50wN3Hk+oERsumS3OVquZgJO9lYcAj/ieQyKWJ6NStAqBUysTwIlYs3NeVeOOd1reNJvHC5RGlFoQMTmK3sNaBUCzgrWwRFrr2GdX1yNrWwe6TTG09G3+ylNm87iVBpYSjgLZgF84EHLGx7eh95eJ3O84BvxPFSNLbd4uZzKUUKESoupHAfrArAcS8tlejGVC0l1KhsfNQNUM7ZcRTpchirGqWx5KZeEchHYAEpFOZTgMjyDdUbMcUip4I50Jry7foixU4IYOyWIsVOCGHuFc8Gmp/HMplTMtNsalRazwcbG9Akp/Wy0d42qJLizqDdBpmEnZQsbxjDW6tD3BZtKYtSOOdhY22SFBhqrU8duHbqz2TT0VG4xsrFqiVHbZbCxOs9Qr9BAY3XqtI3V3PlTjXWHTdfGBvP0RtdWNnnTfS7W9YUrkfgK1NWK2QON9c3fbI60eoTCAYj5BwtlNYRUjI0aOxsqNN/VKBBhbo4UuaqJdBubSal2F+w11qjkDMPAPwGHxfLXqEMxNi7BuRxiRFqIQtQPhQDkYZFOlukin5Nupfdvu/VGnZLFGO0XKSFOy13p7TMWcFrvW+753O3NyztIKMegAytCpQC8gRzNoeVSTF0ojipMMSopUnI8wXQJ9f2I8SJluR+yX323hOrnYsixKMWFoKzEQkPkmWBCijT5Yr+x+5fKafhziwzk0n72qutlr7FRbNcAb53XVx+bz4aybwvivnIliFyEWpE/woXrkk3R6D9YDb31Cifyqat46i8l+9MrlUSmBYXc7rr8DuzH0VeBTnoNvZcDF1o03sdCMcWJyItE2tMMXuxdskUkVKiGLjwCKx0hoUC7vadLqI6EGnk4CTfq6M18+vEo1RHqvUbhBBlXsQ7VvutUoHn55dIj5lTYOE/B8q+ho4Z5/kJMRyO1rVq/sRRSYneXV47h9bocKX9gax1jr2VsIXz034bl4O2IRYFkuo5YiDz1Nk2u4OkTwBFLrUuVhl1s8lC4ZexK8O9yCzIxZGwT7K+dLn8nvWoRa7lPGeEmYiGY3sJCeRToOGLFLLuDhErw5raxSAgbiwL3NTjy3FyyI6QSsXlL3gWdiIWXXKkocrlqO/dqlGzHbvu+LRtM9xubh8wluxtZoeDN+hMvu2MVOsZ2Rey9dp6mCd7d5IbrPBZnPEEGyrwMi4F2HhunYzJLC2EI3zIW7SiLFCOmRKFMCXVK6hxTNY+1dzZjIW8Y0IEhh4TCfoh5+TCjCOX6jVWE6hRTF+JYL86fdQmp5LGOzlZ8ZGC5CL8BdeYqj2VDPit/FmS8TL+xMfC0cNYXQ59ydDJHF1WMnXcPdbV7d1IqGMw3WNzSvjv/VRhr0NnTQUmqUXMXxdLBxuoUUi6m2v1J1OoQnUWdXVHaF3jNk1Kr4ek2dtKQtoIpQYydEsTYKUGM7Uf7wtS5cIRVjtbFcGOt+q5iNrXa++AUqKRf79VSu3w6trF6DzCkTjfcWH0F7XadTYPhxupMkdU+is4wPt3YIfsNN9Y9vF6oMOQ/ODljtUvyEzFWzELwsr0YbtcKATxvQlc1PMDtUZMxFglFroSYmxbDLqE9/4SMzXNQaTe+lVNQbzcBlCn+undIUL4bY8/f+stvPYtnkGPouFyC3IYfgu8gUovwDK5E/12ekLHnb6H8FpDQYixdF/KKkDeNhOKKkOkv8mSM9fwowS8NkRbEUGkpvP4EfQLIcHAaQKlBWuv/uBtjWZ+wQGWkgnwJp2lIlGuVFfD+yr9IKm13wXRuUhGLhMJvKtkMEjrOArVeq2TB84p/4X8NmT0sFJiQsemzepi5cF1WUufPuTX52HUBcFJ9Ja8/iWTzkHFId2SskJDzmaI4n4ZWIVli5XkBR2wmlYdKTPamS5My9lAoyW8qst3Rghbvp85lh4AjtlBswcvoE8+7SRnrTbPZ+lnT6aqkKrHGmtxyompqZineXN/dSlPw0r5zN8aWU7mAL8hveM4g5pXCsEhz4D2DYDZOSegXWiwzEzJWEfIkaP8ZMBEmpgh5sJBIoayA4rDQRCL2LC7V5TLuOVbmcqIgopwGWA7YIlIUUaJa/jsx9tO+2QMpFfSjdxzN2MbqLcfembFTLsc6dTa3DSm3DzfWcHPjzbh6u7uELUqZ25+G/KeHG2vWlyCX9s3Xr7CtwHovpLb6N0qX0FfTVjAh9BsbtlhUc1uf5TftH2cbYqw6hgcWyz3VLVaLxaIayr18oca6wDAdnH3G2gYIwYLF4lPdBvdwyA7T6b/YTitBow6OdRqnRd+lYNBu5ljUElXfQq36bMN1+soW5k8+4WGMZuxnxzl4VLVBfeI1gi60R+OYFu7oNL45YkN67hnN2tsJ6swNLVC1O1wTRsOqY9qKUUfuEUCfaYYhdy0JtxmWwbYxf20Fnc+OS0+NFUg2Oypu3fMCkWx2JPQX/kk2OwqjVKpINqsfl86Ozm0WnNM6j28N94iNRSSbVeN2G5zhpqVw6HdB2cUQu1qCnvfZxqfSBnfTuhfW/JHbTGaD0Wp3mg1m/Goym+ztd/RqN+m8zfvNonmb1W7V2qodmTqHIX+zaN7U0DZW27pZrzhgY4MMXM8bhN/rFHM1F52OiF1IXnV4bJfRcnRSpJT+grNeCMPGRt5BXRJ52bsoxVs0l4eSf1Hpv6kjYvF4UH8OD5Xm8jkmLkSyZjwxGMCsl8GwsVu/hvYbZuvFWs0VX4lkaXiZapujI2Iz1dCFSajIx3PFPORxlz2oKMNgZ70R/CZiS3MXJvt+VNrK8jgMdRh7E7Fi9oSxl2sUMjYnQBRe4vG2ml+dAZQ89gzlrTkf7eU33EyQEfMMgDLUWNtYZSOeJcJNx+QKLcQgJq4m8EhlvGHWSwVjFLe0rZv1akLMbh5MVPMKZLIb5p0Ok93kNjnwO3qxWlHVwOGct9pNU5tg/CvBYNJiyFeVqq8JTBT6ACZcBw5fdaoxzXrAToTfOr24zBaddx4Iw7ln6fTccFqIsxPCcM9i6SqzWnqWCJ8Onjeoq/DwwGJ58PlO5ptiLm/pWlp9QPrKTYiFnoYsE9j6y2hODjxX93qs1zUyj9ncOxG+0uHTe5U/e812Mx5Y6izC7GK7VYno74T4/p/w53+BOwnO+O/g3AQrB/Dwg20TnFbkpMnEgdcBm1Zk9C8N9B8wuZNe19FHc9ITrx7O8IM0b/fldPWF7GE18GxzXdrf+vfezwdctZ7N7CJjo9Xlt+YE+/T9z0eB1QP5x+gHCL4yb1Z23v+OjH+0FNw8SHn2Z/dBmnMqtd4+rw/3Pn6kvvcl7DXPf7aherixKMPDbUPhpx3IFWqHS4d72/iZsZsApbUG5CtLgI2Fx/8DgEJ8VlHrrtEXsj8s/e/S6rpUiNSCvz+WN+u/H+CIda3+tP3dB/bDD0uHxdWKpBh76l1ld35IATY2Uj3ca7KjPnjhm2FOtTWh122n34kuWQ7OYwUnuK1gRZckj92e9KDVnNPpN/lRVmttX9jQJ6df+Y4pCZx3di9e6v2L+nNZwqgMcpD05xqTQcM71HMIgl7UigRtyICasRhs3+1qA0E/Wu6RkB0DrV7ft1oMCIMx9ExDYYvdTG3eadu2G2z4z2oz0IBfO3+f8by/eByDfvqdG4cDZzwh9xU0cAyyrdOzbqB/OueYmU10GDvwvi6JWA2wsZHenonKHFldxuI+hmVOmV8R2h9xB0QgfeQ0wcYuP1WeWyJ7F5n6OzoZhgLXbSz279ESFPwsXRTp4kks6xXquIlq1nt1aqIY++/QUcNofb6+4qqvLK/gOfm6jcV3aA+roQuDIK6c2oST1EnKe4wjnFQYNLiOWIZ3PTeZT6ON5ZWI8hiljrHYPxSxi4703opj7jK3xM4JSs9Fck9cA2xsXIK6nPOlI9RGXI4whRDN9ZcK2BTEnLyPKdMyy5WL7WeXkFKBBgPLsR1jB9YDSKlAA/egmco7dVuX9brmpbyarutdxlkf6zFhVj/3CXyjuC0ka50KPgsZZjsV7g2YGZEwHvMWi2WkAfoEfUQfPHigewoUwiiQFoIpMbUJY2cdYuyUIMZOCWLslCDGTgli7JSY9SHgE+bmScC22M1TP0iJdgKoDfwmmcIEUDORGDsBFBMN19PIda0jjIdiYrnwAk9/kvFlO+sI49E2cXkHCuYsiBtd6whj0Taxvg2e/0NFhLy/s44wFjfGnkSl0jwxdmK0TfQWwQxmT5TrWkcYC1LcmhK3H7I49OGKBAIB4P8BL9/qsL9LsnsAAAAASUVORK5CYII=">
+      <p class="indent">As such, the verification is reliable as long as honest nodes control the network, but is more
+vulnerable if the network is overpowered by an attacker. While network nodes can verify
+transactions for themselves, the simplified method can be fooled by an attacker's fabricated
+transactions for as long as the attacker can continue to overpower the network. One strategy to
+protect against this would be to accept alerts from network nodes when they detect an invalid
+block, prompting the user's software to download the full block and alerted transactions to
+confirm the inconsistency. Businesses that receive frequent payments will probably still want to
+run their own nodes for more independent security and quicker verification.</p>
+      </section>
+      <section class="main-section" id="combining_and_splitting_value">
+        <header>Combining and Splitting Value</header>
+        <p>Although it would be possible to handle coins individually, it would be unwieldy to make a
+separate transaction for every cent in a transfer. To allow value to be split and combined,
+transactions contain multiple inputs and outputs. Normally there will be either a single input
+from a larger previous transaction or multiple inputs combining smaller amounts, and at most two
+outputs: one for the payment, and one returning the change, if any, back to the sender.</p>
+      <img id="combining-and-splitting-value-img" src="data:image/png;base64,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">
+      <p class="indent">It should be noted that fan-out, where a transaction depends on several transactions, and those
+transactions depend on many more, is not a problem here. There is never the need to extract a
+complete standalone copy of a transaction's history.</p>
+      </section>
+      <section class="main-section" id="privacy">
+        <header>Privacy</header>
+        <p>The traditional banking model achieves a level of privacy by limiting access to information to the
+parties involved and the trusted third party. The necessity to announce all transactions publicly
+precludes this method, but privacy can still be maintained by breaking the flow of information in
+another place: by keeping public keys anonymous. The public can see that someone is sending
+an amount to someone else, but without information linking the transaction to anyone. This is
+similar to the level of information released by stock exchanges, where the time and size of
+individual trades, the "tape", is made public, but without telling who the parties were.</p>
+      <img id="privacy-tag" src="data:image/png;base64,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">
+      <p class="indent">As an additional firewall, a new key pair should be used for each transaction to keep them
+from being linked to a common owner. Some linking is still unavoidable with multi-input
+transactions, which necessarily reveal that their inputs were owned by the same owner. The risk
+is that if the owner of a key is revealed, linking could reveal other transactions that belonged to
+the same owner.</p>
+      </section>
+      <section class="main-section" id="calculations">
+      <header>Calculations</header>
+      <p>We consider the scenario of an attacker trying to generate an alternate chain faster than the honest
+chain. Even if this is accomplished, it does not throw the system open to arbitrary changes, such
+as creating value out of thin air or taking money that never belonged to the attacker. Nodes are
+not going to accept an invalid transaction as payment, and honest nodes will never accept a block
+containing them. An attacker can only try to change one of his own transactions to take back
+money he recently spent</p>
+      <p class="indent">The race between the honest chain and an attacker chain can be characterized as a Binomial
+Random Walk. The success event is the honest chain being extended by one block, increasing its
+lead by +1, and the failure event is the attacker's chain being extended by one block, reducing the
+gap by -1</p>
+      <p class="indent math-prob">The probability of an attacker catching up from a given deficit is analogous to a Gambler's
+Ruin problem. Suppose a gambler with unlimited credit starts at a deficit and plays potentially an
+infinite number of trials to try to reach breakeven. We can calculate the probability he ever
+reaches breakeven, or that an attacker ever catches up with the honest chain, as follows [8]:</p>
+      <p class="indent">p = probability an honest node finds the next block</p>
+      <p class="indent">q = probability the attacker finds the next block</p>
+      <p class="indent">q<sub>z</sub> = probability the attacker will ever catch up from z blocks behind</p>
+      <div class="crop">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBhXPARyQFGVjXofF24sgnO4VBOPkgnp-nyQ&usqp=CAU" class="calc-1">
+      </div>
+      <p>Given our assumption that p > q, the probability drops exponentially as the number of blocks the
+attacker has to catch up with increases. With the odds against him, if he doesn't make a lucky
+lunge forward early on, his chances become vanishingly small as he falls further behind</p>
+      <p class="indent">We now consider how long the recipient of a new transaction needs to wait before being
+sufficiently certain the sender can't change the transaction. We assume the sender is an attacker
+who wants to make the recipient believe he paid him for a while, then switch it to pay back to
+himself after some time has passed. The receiver will be alerted when that happens, but the
+sender hopes it will be too late</p>
+      <p class="indent">The receiver generates a new key pair and gives the public key to the sender shortly before
+signing. This prevents the sender from preparing a chain of blocks ahead of time by working on
+it continuously until he is lucky enough to get far enough ahead, then executing the transaction at
+that moment. Once the transaction is sent, the dishonest sender starts working in secret on a
+parallel chain containing an alternate version of his transaction.</p>
+      <p class="indent">The recipient waits until the transaction has been added to a block and z blocks have been
+linked after it. He doesn't know the exact amount of progress the attacker has made, but
+assuming the honest blocks took the average expected time per block, the attacker's potential
+progress will be a Poisson distribution with expected value:</p>
+      <div class="crop-2">
+      <img src="https://www.datocms-assets.com/56652/1651422144-screen-shot-2022-05-01-at-12-22-12-pm.png?auto=format&dpr=0.51&q=75&w=1994" class="calc-2">
+      </div>
+      <p>Converting to C code...</p>
+      <code>#include < math.h ></code>
+      <code>double AttackerSuccessProbability(double q, int z)</code>
+      <code>{</code>
+      <code class="indent">double p = 1.0 - q;</code>
+      <code class="indent">double lambda = z * (q / p);</code>
+      <code class="indent">double sum = 1.0;</code>
+      <code class="indent">int i, k;</code>
+      <code class="indent">for (k = 0; k <= z; k++)</code>
+      <code class="indent">{</code>
+      <code class="dbl-indent">double poisson = exp(-lambda);</code>
+      <code class="dbl-indent">for (i = 1; i <= k; i++)</code>
+      <code class="trpl-indent">poisson *= lambda / i;</code>
+      <code class="dbl-indent">sum -= poisson * (1 - pow(q / p, z - k));</code>
+      <code class="indent">}</code>
+      <code class="indent">return sum;</code>
+      <code>}</code>
+      <p class="running">Running some results, we can see the probability drop off exponentially with z.</p>
+      <div class="code-1">
+      <code>q=0.1</code>
+      <code><pre>z=0        P=1.0000000</pre></code>
+      <code><pre>z=1        P=0.2045873</pre></code>
+      <code><pre>z=2        P=0.0509779</pre></code>
+      <code><pre>z=3        P=0.0131722</pre></code>
+      <code><pre>z=4        P=0.0034552</pre></code>
+      <code><pre>z=5        P=0.0009137</pre></code>
+      <code><pre>z=6        P=0.0002428</pre></code>
+      <code><pre>z=7        P=0.0000647</pre></code>
+      <code><pre>z=8        P=0.0000173</pre></code>
+      <code><pre>z=9        P=0.0000046</pre></code>
+      <code><pre>z=10       P=0.0000012</pre></code>
+      </div>
+      <div class="code-2">
+      <code><pre>q=0.3</pre></code>
+      <code><pre>z=0        P=1.0000000</pre></code>
+      <code><pre>z=5        P=0.1773523</pre></code>
+      <code><pre>z=10       P=0.0416605</pre></code>
+      <code><pre>z=15       P=0.0101008</pre></code>
+      <code><pre>z=20       P=0.0024804</pre></code>
+      <code><pre>z=25       P=0.0006132</pre></code>
+      <code><pre>z=30       P=0.0001522</pre></code>
+      <code><pre>z=35       P=0.0000379</pre></code>
+      <code><pre>z=40       P=0.0000095</pre></code>
+      <code><pre>z=45       P=0.0000024</pre></code>
+      <code><pre>z=50       P=0.0000006</pre></code>
+      </div>
+      <p>Solving for P less than 0.1%...</p>
+      <div class="code-3">
+        <code><pre>P < 0.001</pre></code>
+        <code><pre>q=0.10 z=5</pre></code>
+        <code><pre>q=0.15 z=8</pre></code>
+        <code><pre>q=0.20 z=11</pre></code>
+        <code><pre>q=0.25 z=15</pre></code>
+        <code><pre>q=0.30 z=24</pre></code>
+        <code><pre>q=0.35 z=41</pre></code>
+        <code><pre>q=0.40 z=89</pre></code>
+        <code><pre>q=0.45 z=340</pre></code>
+      </div>
+      </section>
+      <section class="main-section" id="conclusion">
+        <header>Conclusion</header>
+        <p>We have proposed a system for electronic transactions without relying on trust. We started with
+the usual framework of coins made from digital signatures, which provides strong control of
+ownership, but is incomplete without a way to prevent double-spending. To solve this, we
+proposed a peer-to-peer network using proof-of-work to record a public history of transactions
+that quickly becomes computationally impractical for an attacker to change if honest nodes
+control a majority of CPU power. The network is robust in its unstructured simplicity. Nodes
+work all at once with little coordination. They do not need to be identified, since messages are
+not routed to any particular place and only need to be delivered on a best effort basis. Nodes can
+leave and rejoin the network at will, accepting the proof-of-work chain as proof of what
+happened while they were gone. They vote with their CPU power, expressing their acceptance of
+valid blocks by working on extending them and rejecting invalid blocks by refusing to work on
+them. Any needed rules and incentives can be enforced with this consensus mechanism.</p>
+      </section> 
+      <section class="main-section" id="references">
+        <header>References</header>
+        <p>[1]W.Dai, "b-money," http://www.weidai.com/bmoney.txt, 1998</p>
+        <p>[2] H. Massias, X.S. Avila, and J.-J. Quisquater, "Design of a secure timestamping service with minimal
+trust requirements," In 20th Symposium on Information Theory in the Benelux, May 1999.</p>
+        <p>[3] S. Haber, W.S. Stornetta, "How to time-stamp a digital document," In Journal of Cryptology, vol 3, no
+2, pages 99-111, 1991.</p>
+        <p>[4] D. Bayer, S. Haber, W.S. Stornetta, "Improving the efficiency and reliability of digital time-stamping,"
+In Sequences II: Methods in Communication, Security and Computer Science, pages 329-334, 1993.</p>
+        <p>[5] S. Haber, W.S. Stornetta, "Secure names for bit-strings," In Proceedings of the 4th ACM Conference
+on Computer and Communications Security, pages 28-35, April 1997.</p>
+        <p>[6] A. Back, "Hashcash - a denial of service counter-measure,"
+http://www.hashcash.org/papers/hashcash.pdf, 2002.</p>
+        <p>[7] R.C. Merkle, "Protocols for public key cryptosystems," In Proc. 1980 Symposium on Security and
+Privacy, IEEE Computer Society, pages 122-133, April 1980.</p>
+        <p>[8] W. Feller, "An introduction to probability theory and its applications," 1957.</p>
+      </section>
+    </main>
+  </body>
+</html>
